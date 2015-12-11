@@ -28,14 +28,13 @@ class Listener(StreamListener):
     def __init__(self, out, log):
         self.out = out
         self.log = log
-    
+
     def on_data(self, data):
         print >> self.out, data
         return True
 
     def on_error(self, status):
         print >> self.log, status
-
 
 #####
 # FUNCTIONS
@@ -58,7 +57,7 @@ def check_keywords(keyfile, keywords):
     '''Compiles a list of keywords based on any found in
     a keyfile or specified by the --keywords flag. If none
     are found, rases NameError.
-    ULTIMATELY, MAY NEED A MORE SOPHISTICATED FUNCTION TO GENERATE 
+    ULTIMATELY, MAY NEED A MORE SOPHISTICATED FUNCTION TO GENERATE
     MANY ALTERNATIVE FORMS WITH REGULAR EXPRESSIONS.
     '''
     keylist=[]
@@ -77,7 +76,7 @@ def check_keywords(keyfile, keywords):
     return sorted(keylist)
 
 def stream(out, log, keys, consumer_key, consumer_secret, access_token, access_token_secret):
-    '''Main streaming function that opens an instance of the listener and streams 
+    '''Main streaming function that opens an instance of the listener and streams
     to the outfile object.
     '''
     l = Listener(out,log)
@@ -85,10 +84,6 @@ def stream(out, log, keys, consumer_key, consumer_secret, access_token, access_t
     auth.set_access_token(access_token, access_token_secret)
     stream = Stream(auth, l)
     stream.filter(track=keys, languages=['en'])
-
-
-
-
 
 ###
 # Main
@@ -104,15 +99,12 @@ def main():
     args = p.parse_args()
     check_credentials()
     keyword_list = check_keywords(args.keyfile, args.keyword)
-    
+
     #Block below runs the stream function for a set amount of time by running a separate thread which exits python after set time.
     t = Thread(target=stream, args=(args.output,args.log,keyword_list,creds.consumer_key,creds.consumer_secret,creds.access_token,creds.access_token_secret,))
     t.daemon = True
     t.start()
     sleep(args.sleeptime)
-
-
-
 
 #####
 # RUN
@@ -120,9 +112,8 @@ def main():
 if __name__=="__main__":
     main()
 
-
 #####
 # NOTES
 #####
-# Ultimately, would like to create another program which implements this program at set times.
+#
 #####
